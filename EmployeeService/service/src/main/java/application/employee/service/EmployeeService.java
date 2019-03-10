@@ -32,7 +32,7 @@ public class EmployeeService implements EmployeeServiceInterface
 
     public Employee updateEmployee(String id, Employee employee)
     {
-        employee.getEmployeeDetail().setId(id);
+        employee.getEmployeeDetail().setId(id);//123
         return employeeRepository.updateEmployee(employee.getEmployeeDetail());
     }
 
