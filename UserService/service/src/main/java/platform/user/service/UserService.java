@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import platform.user.api.UserServiceInterface;
 import platform.user.auth.token.SessionToken;
 import platform.user.auth.token.TokenGenerator;
+import platform.user.auth.token.store.TokenStore;
 import platform.user.model.LoginRequest;
 import platform.user.model.LoginResponse;
 import platform.user.model.User;
@@ -20,6 +21,9 @@ public class UserService implements UserServiceInterface
 
     @Autowired
     private TokenGenerator tokenGenerator;
+
+    @Autowired
+    private TokenStore tokenStore;
 
     public void createUser(User user)
     {
@@ -40,6 +44,7 @@ public class UserService implements UserServiceInterface
             loginResponse.setUsername(user.getUsername());
             SessionToken sessionToken = tokenGenerator.createToken(user.getUsername());
             loginResponse.setToken(sessionToken.getValue());
+            tokenStore.addToken(sessionToken);
         }
         return loginResponse;
     }

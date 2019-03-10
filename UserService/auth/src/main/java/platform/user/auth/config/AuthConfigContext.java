@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -28,6 +29,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import platform.user.auth.UserDetailsAuthenticationProvider;
 import platform.user.auth.token.TokenAuthenticationEntryPoint;
 import platform.user.auth.token.TokenAuthenticationFilter;
+import platform.user.auth.token.TokenGenerator;
+import platform.user.auth.token.store.PersistentTokenStore;
+import platform.user.auth.token.store.TokenStore;
 
 import javax.servlet.Filter;
 import java.util.*;
@@ -35,6 +39,7 @@ import java.util.*;
 
 @Configuration
 @ImportResource("classpath:auth.xml")
+@EnableMongoRepositories("platform.user.auth")
 public class AuthConfigContext
 {
     @Value("${auth.uri.whitelist:none}")
@@ -141,5 +146,17 @@ public class AuthConfigContext
         requestMap.put(AnyRequestMatcher.INSTANCE, SecurityConfig.createList(AuthenticatedVoter.IS_AUTHENTICATED_FULLY,
                 AuthenticatedVoter.IS_AUTHENTICATED_REMEMBERED));
         return new DefaultFilterInvocationSecurityMetadataSource(requestMap);
+    }
+
+    @Bean(name = "sessionTokenGenerator")
+    public TokenGenerator tokenGenerator()
+    {
+        return new TokenGenerator();
+    }
+
+    @Bean(name = "sessionsTokenStore")
+    public TokenStore sessionTokenStore()
+    {
+        return new PersistentTokenStore();
     }
 }
