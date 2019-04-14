@@ -1,9 +1,35 @@
 package demo
 dialect "mvel"
 
+rule "Rate Plan A - Cyber Monday"
+when
+    ratePlanPeriod : RatePlanPeriod()
+    ratePlan : RatePlan(ratePlanCode == "A" && date >= ratePlanPeriod.startDate && date <=  ratePlanPeriod.endDate)
+then
+    ratePlan.rate = ratePlan.baseRate + 20;
+end
+
+
+rule "Rate Plan B - Cyber Monday"
+when
+    ratePlanPeriod : RatePlanPeriod()
+    ratePlan : RatePlan(ratePlanCode == "B" && date >= ratePlanPeriod.startDate && date <=  ratePlanPeriod.endDate)
+then
+    ratePlan.rate = ratePlan.baseRate + 50;
+end
+
+rule "Rate Plan C - rugular  day"
+when
+    ratePlanPeriod : RatePlanPeriod()
+    ratePlan : RatePlan(date <= ratePlanPeriod.startDate || date >=  ratePlanPeriod.endDate)
+then
+    ratePlan.rate = ratePlan.baseRate + 120;
+end
+
+
 rule "Print Rate"
 when
     ratePlan : RatePlan()
 then
-    System.out.println("Rate Plan: " + ratePlan.ratePlanCode + " Rate: " + ratePlan.rate)
+    System.out.println("Rate Plan: " + ratePlan.ratePlanCode + " Rate: " + ratePlan.rate);
 end
