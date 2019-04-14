@@ -1,0 +1,9 @@
+package demo
+dialect "mvel"
+
+rule "Print Rate"
+when
+    ratePlan : RatePlan()
+then
+    System.out.println("Rate Plan: " + ratePlan.ratePlanCode + " Rate: " + ratePlan.rate)
+end
